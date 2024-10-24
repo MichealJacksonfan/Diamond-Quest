@@ -113,8 +113,9 @@ public class traveler : MonoBehaviour
         };
 
         Result("Welcome, traveler. To navigate this mysterious land, enter the direction in which you wish to go (example: n=north)");
-
+        Result("Enter 'quit' to leave.");
         Result("You find yourself on a long road in a rural flat land with trees on either side.");
+
 
         Move();
     }
@@ -202,18 +203,14 @@ public class traveler : MonoBehaviour
         GameObject newtext= Instantiate(text);
         newtext.GetComponent<Text>().text = result;
         newtext.transform.SetParent(outputfield.transform);
-
-
-        if (GameObject.FindGameObjectsWithTag("output").Length > 6)
+    }
+    private void Update()
+    {
+        if (GameObject.FindGameObjectsWithTag("output").Length > 8)
         {
-            while (GameObject.FindGameObjectsWithTag("output").Length > 6)
-            {
-
-                Destroy(outputfield.transform.GetChild(0).gameObject);
-            } 
+            Destroy(outputfield.transform.GetChild(0).gameObject);
         }
     }
-
     public void Input(string input)
     {
         if (new List<string>() { "n", "s", "w", "e" }.Contains(input))
@@ -284,15 +281,32 @@ public class traveler : MonoBehaviour
             }
             if (input == "open safe")
             {
-                if ((x, y) == (4, 4) && inventory.Contains("safe key") && safelock)
+                if ((x, y) == (4, 4))
                 {
-                    safelock = false;
-                    Result("You found a numerical code: "+code+".");
-                    inventory.Remove("safe key");
+
+                    if (inventory.Contains("safe key"))
+                    {
+                        safelock = false;
+                        Result("You found a numerical code: " + code + ".");
+                        inventory.Remove("safe key");
+                    }
+                    else
+                    {
+                        if (safelock)
+                        {
+
+                            Result("The safe is locked.");
+                        }
+                        else
+                        {
+
+                            Result("The safe is empty.");
+                        }
+                    }
                 }
                 else
                 {
-                    Result("The safe is locked");
+                    Result("You can't do that.");
                 }
             }
             if (input=="look under carpet")
@@ -421,10 +435,6 @@ public class traveler : MonoBehaviour
 
                     Result("You are already out of the shed.");
                 }
-            }
-            if (inshed)
-            {
-
             }
             if (input == "grab ax")
             {
@@ -665,6 +675,10 @@ public class traveler : MonoBehaviour
                 {
                     Result("You can't do that.");
                 }
+            }
+            if (input=="quit")
+            {
+                Application.Quit();
             }
         }
     }
